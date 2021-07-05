@@ -28,3 +28,4 @@ To install this project on your local desktop, clone this repositor and include 
 
 ---
 
+# voting-app
