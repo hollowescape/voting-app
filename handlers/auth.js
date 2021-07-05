@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res, next) => {
     try {
-        console.log(process.env.SECRET)
+        console.log(process.env.MONGODB_URI)
         const user = await db.User.create(req.body);
         const { id, username } = user;
         const token = jwt.sign({ id, username }, process.env.SECRET);
@@ -11,6 +11,7 @@ exports.register = async (req, res, next) => {
             id, username, token,
         });
     } catch (err) {
+        console.log(err);
         if (err.code === 11000) {
             console.log(err);
             err.message = 'Sorry that username is already taken'
