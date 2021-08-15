@@ -56,7 +56,7 @@ exports.createPoll = async (req, res, next) => {
 exports.vote = async (req, res, next) => {
   const { id: pollId } = req.params;
   const { id: userId } = req.decoded;
-  const { answer } = req.body;
+  const { previous, answer } = req.body;
   try {
     if (answer) {
       const poll = await db.Poll.findById(pollId);
@@ -65,10 +65,10 @@ exports.vote = async (req, res, next) => {
       const vote = poll.options.map((option) =>
         option.option === answer
           ? {
-              option: option.option,
-              _id: option._id,
-              votes: option.votes + 1,
-            }
+            option: option.option,
+            _id: option._id,
+            votes: option.votes + 1,
+          }
           : option
       );
 
@@ -81,7 +81,20 @@ exports.vote = async (req, res, next) => {
 
         return res.status(202).json(poll);
       } else {
-        throw new Error("Already voted");
+
+        vote = poll.options.map((option) =>
+          option.option === previous
+            ? {
+              option: option.option,
+              _id: option._id,
+              votes: option.votes - 1,
+            }
+            : option
+        );
+
+        poll.options = vote;
+        await poll.save();
+
       }
     } else {
       throw new Error("No Answer Provided");
@@ -112,6 +125,7 @@ exports.getPoll = async (req, res, next) => {
 };
 
 exports.deletePoll = async (req, res, next) => {
+  console.log(req.params);
   const { id: pollId } = req.params;
   const { id: userId } = req.decoded;
   try {
@@ -137,3 +151,38 @@ exports.deletePoll = async (req, res, next) => {
     });
   }
 };
+
+
+exports.updatePoll = async (req, res, next) => {
+  console.log(req.params);
+  const { id: pollId } = req.params;
+  const { id: userId } = req.decoded;
+  const {question} = req.body;
+  
+  try {
+    let user = await db.User.findById(userId);
+    if (user.polls) {
+      user.polls = user.polls.filter((userPoll) => {
+        return userPoll._id.toString() !== pollId.toString();
+      });
+    }
+
+    const poll = await db.Poll.findOneAndUpdate(pollId, {
+      "question": question
+    });
+    if (!poll) throw new Error("No poll found");
+    if (poll.user.toString() !== userId) {
+      throw new Error("Unauthorized access");
+    }
+    await user.save();
+    poll.save();
+
+    return res.status(202).json({ poll, deleted: true });
+  } catch (err) {
+    return next({
+      status: 400,
+      message: err.message,
+    });
+  }
+};
+

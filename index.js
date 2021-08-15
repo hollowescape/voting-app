@@ -27,6 +27,9 @@ if (process.env.NODE_ENV === 'production') {
     })
 }
 
+const all_routes = require('express-list-endpoints');
+console.log(all_routes(app));
+
 app.use(handle.error);
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

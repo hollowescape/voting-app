@@ -6,6 +6,7 @@ import { getCurrentPoll } from '../store/actions';
 import HomePage from '../pages/HomePage';
 import AuthPage from '../pages/AuthPage';
 import PollPage from '../pages/PollPage';
+import PollUpdatePage from '../pages/PollUpdatePage';
 import CreatePollPage from '../pages/CreatePollPage';
 
 const RouteViews = ({ getCurrentPoll, auth }) => (
@@ -39,6 +40,15 @@ const RouteViews = ({ getCurrentPoll, auth }) => (
                 path="/poll/:id"
                 render={props => (
                     <PollPage getPoll={id => getCurrentPoll(id)} {...props} />
+                )}
+            />
+
+
+            <Route
+                exact
+                path="/poll/update/:id"
+                render={props => (
+                    <PollUpdatePage getPoll={id => getCurrentPoll(id)} {...props} />
                 )}
             />
         </Switch>

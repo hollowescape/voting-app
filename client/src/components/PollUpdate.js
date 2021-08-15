@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { connect } from 'react-redux';
 import { Pie } from 'react-chartjs-2';
 import axios from 'axios';
@@ -6,16 +6,18 @@ import { vote } from '../store/actions';
 import { color } from '../services/color';
 
 const Poll = ({ poll, vote }) => {
+const [question, setQuestion] = useState(poll.question)
+const [options, setOptions] = useState([]);
+
   const answers =
-    poll.options &&
-    poll.options.map(option => (
-      <button
-        onClick={() => vote(poll._id, { answer: option.option })}
+    options &&
+    options.map(opt => (
+        <h2
         className="button"
-        key={option._id}>
-        {option.option}
-      </button>
-    ));
+        key={opt._id}>
+            {opt.option}
+        </h2>
+    ))
 
   const data = {
     labels: poll.options.map(option => option.option),
@@ -29,8 +31,22 @@ const Poll = ({ poll, vote }) => {
     ],
   };
 
-  async function deletePoll () {
-    let url = window.location.pathname.split('/')[2];
+  useEffect(async () => {
+    let url = window.location.pathname.split('/')[3];
+    
+    let URL = 'http://localhost:4000/api/polls/' + url;
+    let res = await axios.get(URL);
+    let data = res.data;
+    console.log(data);
+    setQuestion(data.question);
+    setOptions(data.options);
+    
+}, [])
+
+
+
+async function deletePoll () {
+    let url = window.location.pathname.split('/')[3];
     
     let URL = 'http://localhost:4000/api/polls/' + url;
 
@@ -42,31 +58,38 @@ const Poll = ({ poll, vote }) => {
       }
     }
     window.location.href = "http://localhost:3000/";
+    let data = {
+        "question": question
+    }
     try {
-      const res = await axios.delete(URL, data, config);
+      const res = await axios.put(URL, data, config);
       console.log(res);
     }
     catch(err) {
       console.log(err);
     }
   }
-
-
-  async function update() {
-    // http://localhost:3000/poll/update/61195b292a850b08f9a04a70
-
-    let url = window.location.pathname.split('/')[2];
-    
-    let URL = 'http://localhost:3000/poll/update/' + url;
-    window.location.href = URL;
+  function handleChange(event) {
+      setQuestion(event.target.value);
   }
 
   return (
-    <div>
-      <h3 className="poll-title">{poll.question}</h3>
-      <div className="buttons_center">{answers}</div>
-      <Pie data={data} />
-
+    <div
+        style={{
+            textAlign: "center"
+        }}
+    >
+      <input className="poll-title" style={{
+            textAlign: "center" 
+        }}
+        onChange={handleChange}
+      value={question}></input>
+      <div className="buttons_center"
+        style={{
+            textAlign: "center"
+        }}
+      >{answers}</div>
+      
       <div
         style={{
           textAlign : "center",
@@ -84,23 +107,8 @@ const Poll = ({ poll, vote }) => {
           }}
           onClick={() => deletePoll()}
         >
-          delete Polls
+          Update Polls
         </button>   
-
-        <button
-          style={{
-            padding: "10px 20px" ,
-            color: "red",
-            borderRadius: "10px",
-            boxShadow: "10px 4px 9px rgba(0, 0, 0, 0.3)",
-            border: "none",
-            marginLeft: "20px"
-          }}
-          onClick={() => update()}
-        >
-          update Polls
-        </button>   
-        {/* http://localhost:3000/poll/update/61195b292a850b08f9a04a70 */}
       </div> 
     </div>
   );
