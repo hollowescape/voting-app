@@ -32,7 +32,7 @@ const Poll = ({ poll, vote }) => {
   async function deletePoll () {
     let url = window.location.pathname.split('/')[2];
     
-    let URL = 'https://voting-appps.herokuapp.com/poll/update/api/polls/' + url;
+    let URL = 'https://voting-appps.herokuapp.com/api/polls/' + url;
 
     let token = localStorage.getItem("jwtToken");
    

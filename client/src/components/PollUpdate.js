@@ -57,13 +57,14 @@ async function deletePoll () {
         'Authorization': 'Bearer ' + token
       }
     }
-    window.location.href = "https://voting-appps.herokuapp.com/";
     let data = {
         "question": question
     }
     try {
       const res = await axios.put(URL, data, config);
       console.log(res);
+      
+      window.location.href = "https://voting-appps.herokuapp.com/";
     }
     catch(err) {
       console.log(err);
