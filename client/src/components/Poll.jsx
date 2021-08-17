@@ -32,7 +32,7 @@ const Poll = ({ poll, vote }) => {
   async function deletePoll () {
     let url = window.location.pathname.split('/')[2];
     
-    let URL = 'http://localhost:4000/api/polls/' + url;
+    let URL = 'https://voting-appps.herokuapp.com/poll/update/api/polls/' + url;
 
     let token = localStorage.getItem("jwtToken");
    
@@ -41,7 +41,7 @@ const Poll = ({ poll, vote }) => {
         'Authorization': 'Bearer ' + token
       }
     }
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "https://voting-appps.herokuapp.com/";
     try {
       const res = await axios.delete(URL, data, config);
       console.log(res);
@@ -57,7 +57,7 @@ const Poll = ({ poll, vote }) => {
 
     let url = window.location.pathname.split('/')[2];
     
-    let URL = 'http://localhost:3000/poll/update/' + url;
+    let URL = 'https://voting-appps.herokuapp.com/poll/update/' + url;
     window.location.href = URL;
   }
 

@@ -34,7 +34,7 @@ const [options, setOptions] = useState([]);
   useEffect(async () => {
     let url = window.location.pathname.split('/')[3];
     
-    let URL = 'http://localhost:4000/api/polls/' + url;
+    let URL = 'https://voting-appps.herokuapp.com/api/polls/' + url;
     let res = await axios.get(URL);
     let data = res.data;
     console.log(data);
@@ -48,7 +48,7 @@ const [options, setOptions] = useState([]);
 async function deletePoll () {
     let url = window.location.pathname.split('/')[3];
     
-    let URL = 'http://localhost:4000/api/polls/' + url;
+    let URL = 'https://voting-appps.herokuapp.com/api/polls/' + url;
 
     let token = localStorage.getItem("jwtToken");
    
@@ -57,7 +57,7 @@ async function deletePoll () {
         'Authorization': 'Bearer ' + token
       }
     }
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "https://voting-appps.herokuapp.com/";
     let data = {
         "question": question
     }
