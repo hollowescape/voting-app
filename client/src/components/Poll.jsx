@@ -5,7 +5,13 @@ import axios from 'axios';
 import { vote } from '../store/actions';
 import { color } from '../services/color';
 
+import { useHistory } from 'react-router-dom';
+
+
 const Poll = ({ poll, vote }) => {
+
+  const history = useHistory();
+
   const answers =
     poll.options &&
     poll.options.map(option => (
@@ -58,7 +64,8 @@ const Poll = ({ poll, vote }) => {
     let url = window.location.pathname.split('/')[2];
     
     let URL = 'https://voting-appps.herokuapp.com/poll/update/' + url;
-    window.location.href = URL;
+    
+    history.push(`/poll/update/${url}`);
   }
 
   return (

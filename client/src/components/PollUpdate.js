@@ -64,7 +64,7 @@ async function deletePoll () {
       const res = await axios.put(URL, data, config);
       console.log(res);
       
-      window.location.href = "https://voting-appps.herokuapp.com/";
+    window.location.href = "https://voting-appps.herokuapp.com/";
     }
     catch(err) {
       console.log(err);
